@@ -147,7 +147,7 @@ int main() {
     for(int j=0; j<4; j++){
       if(state[i][j]<17)
         cout<< hex << 0;
-      cout<<hex<<state[i][j];
+      cout<<hex<<state[j][i];
     }
   cout << endl << (double) end << endl;
   return 0;
