@@ -1,4 +1,4 @@
-// plainText 3243f6a8885a308d313198a2e0370734 
+//plainText 3243f6a8885a308d313198a2e0370734 
 // plainText 54776F204F6E65204E696E652054776F
 // key  2b7e151628aed2a6abf7158809cf4f3c 
 // key  5468617473206D79204B756E67204675
@@ -115,40 +115,52 @@ void addRoundKey(short arr[][4],short key[][4]) {
       arr[i][j] ^= key[i][j];
 }
 
-int main() {
-  string plainText, k; cin>>plainText>>k;
-  
-  clock_t begin = clock();
-  short state[4][4], rk[4][4];
-  int c = 0;
-  stringstream stm;
-  short tmp;
-  for(int i=0;i<4;i++)
-    for(int j=0;j<4;j++, c+=2){
-      stm << hex << plainText.substr(c, 2);
-      stm >> state[j][i];
-      stm.clear();
-      stm << hex << k.substr(c,2);
-      stm >> rk[j][i];
-      stm.clear();
-    }
-  addRoundKey(state, rk);
-  for(int i = 0; i < 9; i++) {
-    subBytes(state);
-    shiftRows(state);
-    mixCol(state);
-    updateKey(rk);addRoundKey(state, rk);
+void copy(short k1[][4], short k2[][4]) {
+  for(int i = 0; i < 4; i++){
+    k2[i][0] = k1[i][0];
+    k2[i][1] = k1[i][1];
+    k2[i][2] = k1[i][2];
+    k2[i][3] = k1[i][3];
   }
-  subBytes(state);
-  shiftRows(state);
-  updateKey(rk);addRoundKey(state, rk);
-  short end = clock() - begin;
-  for(int i=0; i<4; i++)
-    for(int j=0; j<4; j++){
-      if(state[i][j]<17)
-        cout<< hex << 0;
-      cout<<hex<<state[j][i];
+}
+
+void print(short arr[][4]) {
+ for(int i=0; i<4; i++)for(int j=0; j<4; j++){if(arr[i][j]<17)cout<< hex << 0;cout<<hex<<arr[j][i];} 
+}
+
+int main() {
+  string plainText, k;
+  int n, m;
+  short state[4][4], rk[4][4], originalKey[4][4];
+    for(cin>>n;n--;) {
+    cin>>plainText>>k>>m;
+    stringstream stm;
+    short tmp;
+    for(int c = 0, i=0;i<4;i++)
+      for(int j=0;j<4;j++, c+=2){
+        stm << hex << plainText.substr(c, 2);
+        stm >> state[j][i];
+        stm.clear();
+        stm << hex << k.substr(c,2);
+        stm >> originalKey[j][i];
+        stm.clear();
+      }
+    while(m--) {
+      cout<<endl;print(state);cout<<endl;
+      copy(originalKey, rk);
+      addRoundKey(state, rk);
+      for(int i = 0; i < 9; i++) {
+        subBytes(state);
+        shiftRows(state);
+        cout<<endl<<"S"<<i<<": ";print(state);cout<<endl<<"K"<<i<<": ";print(rk);
+        mixCol(state);
+        updateKey(rk);addRoundKey(state, rk);
+      }
+      subBytes(state);
+      shiftRows(state);
+      updateKey(rk);addRoundKey(state, rk);
     }
-  cout << endl << (double) end << endl;
+    print(state);
+  }  
   return 0;
 }
