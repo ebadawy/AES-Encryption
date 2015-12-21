@@ -106,7 +106,7 @@ void updateKey(short key[][4]) {
     key[2][i] = key[2][i-1]^tmp[2][i]; 
     key[3][i] = key[3][i-1]^tmp[3][i]; 
   }
-  Rcon_idx++;
+  Rcon_idx++;Rcon_idx%=10;
 }
 
 void addRoundKey(short arr[][4],short key[][4]) {
@@ -125,7 +125,7 @@ void copy(short k1[][4], short k2[][4]) {
 }
 
 void print(short arr[][4]) {
- for(int i=0; i<4; i++)for(int j=0; j<4; j++){if(arr[i][j]<17)cout<< hex << 0;cout<<hex<<arr[j][i];} 
+ for(int i=0; i<4; i++)for(int j=0; j<4; j++){if(arr[j][i]<16)cout<< hex << 0;cout<<hex<<arr[j][i];} 
 }
 
 int main() {
@@ -146,13 +146,11 @@ int main() {
         stm.clear();
       }
     while(m--) {
-      cout<<endl;print(state);cout<<endl;
       copy(originalKey, rk);
       addRoundKey(state, rk);
       for(int i = 0; i < 9; i++) {
         subBytes(state);
         shiftRows(state);
-        cout<<endl<<"S"<<i<<": ";print(state);cout<<endl<<"K"<<i<<": ";print(rk);
         mixCol(state);
         updateKey(rk);addRoundKey(state, rk);
       }
@@ -160,7 +158,7 @@ int main() {
       shiftRows(state);
       updateKey(rk);addRoundKey(state, rk);
     }
-    print(state);
+    print(state);cout<<endl;
   }  
   return 0;
 }
